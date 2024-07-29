@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Step Form with Progress Bar</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .progress-step {
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+        .progress-step::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #ccc;
+            z-index: -1;
+        }
+        .progress-step.active::before,
+        .progress-step.completed::before {
+            background-color: #007bff;
+        }
+        .progress-step-circle {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 50%;
+            line-height: 20px;
+            color: white;
+            text-align: center;
+            z-index: 1;
+        }
+        .progress-step.active .progress-step-circle,
+        .progress-step.completed .progress-step-circle {
+            background-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="progress-container">
+        <div class="progress-step active">
+            <div class="progress-step-circle">1</div>
+            <p>Step 1</p>
+        </div>
+        <div class="progress-step">
+            <div class="progress-step-circle">2</div>
+            <p>Step 2</p>
+        </div>
+        <div class="progress-step">
+            <div class="progress-step-circle">3</div>
+            <p>Step 3</p>
+        </div>
+         <div class="progress-step">
+            <div class="progress-step-circle">4</div>
+            <p>Step 4</p>
+        </div>
+    </div>
+    <form id="multi-step-form">
+        <div class="step active">
+            <h4>Step 1</h4>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" required>
+            </div>
+            <button type="button" class="btn btn-primary next-btn">Next</button>
+        </div>
+        <div class="step">
+            <h4>Step 2</h4>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <button type="button" class="btn btn-secondary prev-btn">Previous</button>
+            <button type="button" class="btn btn-primary next-btn">Next</button>
+        </div>
+        <div class="step">
+            <h4>Step 3</h4>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+           <button type="button" class="btn btn-secondary prev-btn">Previous</button>
+            <button type="button" class="btn btn-primary next-btn">Next</button>
+        </div>
+        <div class="step">
+            <h4>Step 4</h4>
+            <div class="mb-3">
+                <label for="mobile" class="form-label">mobile</label>
+                <input type="number" class="form-control" id="mobile" required>
+            </div>
+            <button type="button" class="btn btn-secondary prev-btn">Previous</button>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        let currentStep = 0;
+        const steps = $('.step');
+        const progressSteps = $('.progress-step');
+        
+        function showStep(stepIndex) {
+            steps.removeClass('active').eq(stepIndex).addClass('active');
+            progressSteps.removeClass('active completed');
+            for (let i = 0; i <= stepIndex; i++) {
+                progressSteps.eq(i).addClass('completed');
+                if (i == stepIndex) {
+                    progressSteps.eq(i).addClass('active');
+                }
+            }
+        }
+
+        $('.next-btn').click(function() {
+            if (currentStep < steps.length - 1) {
+                if (steps.eq(currentStep).find('input').filter(function() { return this.value === ""; }).length == 0) {
+                    currentStep++;
+                    showStep(currentStep);
+                } else {
+                    alert("Please complete the current step before moving to the next.");
+                }
+            }
+        });
+
+        $('.prev-btn').click(function() {
+            if (currentStep > 0) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        });
+
+        $('#multi-step-form').submit(function(e) {
+            e.preventDefault();
+            alert("Form submitted successfully!");
+            // Here you can add your form submission logic
+        });
+
+        showStep(currentStep);
+    });
+</script>
+</body>
+</html>
